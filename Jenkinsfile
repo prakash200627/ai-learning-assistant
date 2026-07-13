@@ -2,15 +2,13 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Deploy') {
             steps {
                 sh '''
+                cd /home/ubuntu/ai-learning-assistant
+
+                git pull origin main
+
                 docker-compose down || true
                 docker-compose up -d --build
                 '''
