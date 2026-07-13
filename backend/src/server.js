@@ -65,7 +65,7 @@ connectDB();
 const corsOrigins = (process.env.CORS_ORIGINS || '*').split(',').map(o => o.trim());
 app.use(
   cors({
-    origin: corsOrigins.length === 1 && corsOrigins[0] === '*' ? '*' : corsOrigins,
+    origin: corsOrigins.length === 1 && corsOrigins[0] === '*' ? true : corsOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

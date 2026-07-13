@@ -19,7 +19,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=ai-learning-assistant-prakash.duckdns.org
+        - VITE_API_URL=http://ai-learning-assistant-prakash.duckdns.org:8000/api
     container_name: ai_learning_frontend
     ports:
       - "3000:80"
