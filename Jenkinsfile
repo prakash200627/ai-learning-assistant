@@ -8,10 +8,12 @@ pipeline {
             }
         }
 
-        stage('Verify') {
+        stage('Deploy') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
+                sh '''
+                docker-compose down || true
+                docker-compose up -d --build
+                '''
             }
         }
     }
