@@ -53,7 +53,7 @@ npm run dev
 ### Frontend
 | Variable | Description | Example |
 |---|---|---|
-| VITE_API_URL | API Base URL | http://localhost:8000/api |
+| VITE_API_URL | API Base URL | ai-learning-assistant-prakash.duckdns.org |
 
 ## API Endpoints
 | Method | Route | Description | Auth |
