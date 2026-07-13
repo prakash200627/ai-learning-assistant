@@ -7,7 +7,8 @@ pipeline {
                 sh '''
                 cd /home/ubuntu/ai-learning-assistant
 
-                git pull origin main
+                git fetch origin
+                git reset --hard origin/main
 
                 docker compose down || true
                 docker compose up -d --build
