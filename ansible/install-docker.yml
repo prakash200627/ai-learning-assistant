@@ -1,0 +1,16 @@
+---
+- name: Test EC2 Connectivity
+  hosts: web
+  gather_facts: no
+
+  tasks:
+    - name: Ping EC2
+      ping:
+
+    - name: Check Docker Version
+      command: docker --version
+      register: docker_version
+
+    - name: Show Docker Version
+      debug:
+        var: docker_version.stdout

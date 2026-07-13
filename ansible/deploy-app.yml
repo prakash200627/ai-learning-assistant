@@ -1,0 +1,65 @@
+---
+- name: Deploy AI Learning Assistant
+  hosts: web
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - docker.io
+          - docker-compose-v2
+          - git
+        state: present
+
+    - name: Ensure docker service is enabled and running
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/prakash200627/ai-learning-assistant.git
+        dest: /home/ubuntu/ai-learning-assistant
+        version: main
+        force: yes
+      become_user: ubuntu
+
+    - name: Create backend .env
+      copy:
+        dest: /home/ubuntu/ai-learning-assistant/backend/.env
+        content: |
+          PORT=8000
+          NODE_ENV=production
+          LOG_LEVEL=info
+          CORS_ORIGINS=*
+          JWT_EXPIRE=7d
+          MONGODB_URI=YOUR_MONGODB_URI
+          JWT_SECRET=YOUR_JWT_SECRET
+          GROQ_API_KEY=YOUR_GROQ_API_KEY
+      become_user: ubuntu
+
+    - name: Start application with docker compose
+      command: docker compose up -d --build
+      args:
+        chdir: /home/ubuntu/ai-learning-assistant
+      become_user: ubuntu
+
+    - name: Show running containers
+      command: docker ps
+      register: docker_ps
+      become_user: ubuntu
+
+    - name: Print running containers
+      debug:
+        var: docker_ps.stdout_lines
