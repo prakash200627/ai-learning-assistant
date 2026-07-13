@@ -6,10 +6,16 @@ const validate = (schema) => (req, res, next) => {
         req.body = schema.parse(req.body);
         next();
     } catch (err) {
-        logger.warn('Validation Failed', { errors: err.errors, body: req.body });
-        res.status(400).json({
-            error: err.errors[0].message,
-            field: err.errors[0].path[0],
+        logger.warn('Validation Failed', {
+            errors: err.issues || err.errors,
+            body: req.body
+        });
+
+        const issue = err.issues?.[0] || err.errors?.[0];
+
+        return res.status(400).json({
+            error: issue ? issue.message : 'Validation failed',
+            field: issue ? issue.path?.[0] : undefined,
             status: 400
         });
     }
