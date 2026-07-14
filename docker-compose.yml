@@ -17,7 +17,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=http://ai-learning-assistant-prakash.duckdns.org:8000/api
+        - VITE_API_URL=/api
     container_name: ai_learning_frontend
     ports:
       - "3000:80"
@@ -28,6 +28,9 @@ services:
   prometheus:
     image: prom/prometheus:v2.45.0
     container_name: ai_learning_prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.external-url=https://${DOMAIN_NAME}/prometheus/'
     ports:
       - "9090:9090"
     volumes:
@@ -43,6 +46,8 @@ services:
       - "3001:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_ROOT_URL=https://${DOMAIN_NAME}/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     depends_on:
       - prometheus
     restart: always
