@@ -92,14 +92,26 @@ app.use((req, res, next) => {
   next();
 });
 
-// Register all endpoints
+// Register all endpoints (under both /api and root paths for proxy compatibility)
 app.use('/health', healthRoutes);
 app.use('/api/health', healthRoutes);
+
+app.use('/auth', authRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use('/documents', documentsRoutes);
 app.use('/api/documents', documentsRoutes);
+
+app.use('/ai', aiRoutes);
 app.use('/api/ai', aiRoutes);
+
+app.use('/flashcards', flashcardRoutes);
 app.use('/api/flashcards', flashcardRoutes);
+
+app.use('/quizzes', quizRoutes);
 app.use('/api/quizzes', quizRoutes);
+
+app.use('/dashboard', dashboardRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 // Prometheus metrics endpoint
