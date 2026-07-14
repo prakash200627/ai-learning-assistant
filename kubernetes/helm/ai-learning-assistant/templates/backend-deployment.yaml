@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-learning-assistant.fullname" . }}-backend
+  labels:
+    {{- include "ai-learning-assistant.labels" . | nindent 4 }}
+    app: {{ include "ai-learning-assistant.name" . }}-backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-learning-assistant.selectorLabels" . | nindent 6 }}
+      app: {{ include "ai-learning-assistant.name" . }}-backend
+  template:
+    metadata:
+      labels:
+        {{- include "ai-learning-assistant.selectorLabels" . | nindent 8 }}
+        app: {{ include "ai-learning-assistant.name" . }}-backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "ai-learning-assistant.fullname" . }}-config
+            - secretRef:
+                name: {{ include "ai-learning-assistant.fullname" . }}-secrets
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+          volumeMounts:
+            - name: uploads-volume
+              mountPath: /app/uploads
+      volumes:
+        - name: uploads-volume
+          persistentVolumeClaim:
+            claimName: {{ include "ai-learning-assistant.fullname" . }}-uploads-pvc

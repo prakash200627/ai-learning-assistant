@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ai-learning-assistant
+description: Production Helm chart for AI Learning Assistant (React + Express + MongoDB Atlas + Prometheus)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

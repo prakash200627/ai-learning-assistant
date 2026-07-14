@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-learning-assistant.fullname" . }}-backend
+  labels:
+    {{- include "ai-learning-assistant.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "ai-learning-assistant.selectorLabels" . | nindent 4 }}
+    app: {{ include "ai-learning-assistant.name" . }}-backend

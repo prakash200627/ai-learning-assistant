@@ -1,0 +1,55 @@
+domainName: ai-learning-assistant-prakash.duckdns.org
+
+# Global namespace settings
+namespace: default
+
+# Secrets Configuration (override placeholders with production values)
+secrets:
+  mongodbUri: "REPLACE_WITH_MONGODB_URI"
+  groqApiKey: "REPLACE_WITH_GROQ_API_KEY"
+  jwtSecret: "REPLACE_WITH_JWT_SECRET"
+
+# Persistent Volume Claim for Uploads
+pvc:
+  storageClass: "standard"
+  storageSize: 5Gi
+
+# Backend deployment parameters
+backend:
+  replicaCount: 1
+  image:
+    repository: ai-learning-assistant-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+# Frontend deployment parameters
+frontend:
+  replicaCount: 2
+  image:
+    repository: ai-learning-assistant-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80

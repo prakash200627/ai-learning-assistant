@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-learning-assistant.fullname" . }}-frontend
+  labels:
+    {{- include "ai-learning-assistant.labels" . | nindent 4 }}
+    app: {{ include "ai-learning-assistant.name" . }}-frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-learning-assistant.selectorLabels" . | nindent 6 }}
+      app: {{ include "ai-learning-assistant.name" . }}-frontend
+  template:
+    metadata:
+      labels:
+        {{- include "ai-learning-assistant.selectorLabels" . | nindent 8 }}
+        app: {{ include "ai-learning-assistant.name" . }}-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}
